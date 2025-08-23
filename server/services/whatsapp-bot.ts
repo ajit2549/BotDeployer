@@ -6,6 +6,13 @@ import Tesseract from "tesseract.js";
 import { storage } from "../storage";
 import express from "express"; 
 
+// ------------------- Setup Express -------------------
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.get("/", (_req, res) => {
+  res.send("🌍 WhatsApp Bot is running!");
+});
 
 interface BotStatus {
   isRunning: boolean;
@@ -28,25 +35,6 @@ export class WhatsAppBotService {
 
   constructor() {
     this.setupClient();
-    this.setupServer();
-  }
-
-  // ---------------- EXPRESS KEEP-ALIVE SERVER ----------------
-  private setupServer() {
-    const app = express();
-
-    app.get("/", (req, res) => {
-      res.send("✅ WhatsApp bot is running!");
-    });
-
-    app.get("/status", (req, res) => {
-      res.json(this.status);
-    });
-
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-      console.log(`🌍 Keep-alive server running at http://localhost:${PORT}`);
-    });
   }
   
   private async setupClient() {
