@@ -4,6 +4,8 @@ import qrcode from "qrcode";
 import fetch from "node-fetch";
 import Tesseract from "tesseract.js";
 import { storage } from "../storage";
+import express from "express"; 
+
 
 interface BotStatus {
   isRunning: boolean;
@@ -26,8 +28,27 @@ export class WhatsAppBotService {
 
   constructor() {
     this.setupClient();
+    this.setupServer();
   }
 
+  // ---------------- EXPRESS KEEP-ALIVE SERVER ----------------
+  private setupServer() {
+    const app = express();
+
+    app.get("/", (req, res) => {
+      res.send("✅ WhatsApp bot is running!");
+    });
+
+    app.get("/status", (req, res) => {
+      res.json(this.status);
+    });
+
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`🌍 Keep-alive server running at http://localhost:${PORT}`);
+    });
+  }
+  
   private async setupClient() {
     try {
       this.client = new Client({
@@ -67,6 +88,7 @@ export class WhatsAppBotService {
           ],
         },
       });
+      
 
       this.client.on("qr", async (qr: string) => {
         try {
