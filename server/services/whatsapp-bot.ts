@@ -183,6 +183,13 @@ export class WhatsAppBotService {
         );
         await msg.forward(targetChat.id._serialized);
         await msg.delete(true);
+    try {
+      await msg.reply(
+      "⚠️ The message has been identified as promotional and has been forwarded to the Promotion & Advertisement group."
+      );
+    } catch (err) {
+      console.error("❌ Error sending forwarded confirmation:", err);
+    }
 
         await storage.incrementStat("promosDetected");
         await storage.addBotLog({
