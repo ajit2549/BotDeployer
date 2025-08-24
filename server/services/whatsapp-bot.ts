@@ -116,8 +116,7 @@ export class WhatsAppBotService {
           level: "warn",
           message: "🔌 Bot disconnected. Attempting restart...",
         });
-
-        setTimeout(() => this.restart(), 5000); // restart after 5 seconds
+        await this.start()
       });
 
       this.client.on("message", this.handleMessage.bind(this));
