@@ -389,7 +389,7 @@ export class WhatsAppBotService {
 }
 
 // ------------------- Express Server Setup -------------------
-app.get("/", (req, res) => res.send("Bot is alive!"));
+app.get("/status", (req, res) => res.send("Bot is alive!"));
 
 // ------------------- Auto-Restart Server Function -------------------
 function startServer() {
