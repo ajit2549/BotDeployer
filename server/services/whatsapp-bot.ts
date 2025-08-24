@@ -4,14 +4,6 @@ import qrcode from "qrcode";
 import fetch from "node-fetch";
 import Tesseract from "tesseract.js";
 import { storage } from "../storage";
-import express from 'express';
-
-const PORT = process.env.PORT || 3000;
-const app = express();
-
-app.listen(PORT, () => {
-  console.log(`✅ Web server running on port ${PORT}`);
-});
 
 interface BotStatus {
   isRunning: boolean;
