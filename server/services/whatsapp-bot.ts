@@ -4,12 +4,6 @@ import qrcode from "qrcode";
 import fetch from "node-fetch";
 import Tesseract from "tesseract.js";
 import { storage } from "../storage";
-import express from "express";
-import { exec } from "child_process";
-
-// ------------------- Setup Express -------------------
-const PORT = 5000;
-const app = express();
 
 interface BotStatus {
   isRunning: boolean;
@@ -388,47 +382,5 @@ export class WhatsAppBotService {
   }
 }
 
-// ------------------- Auto-Restart Server Function -------------------
-function startServer() {
-  const server = app.listen(PORT, () => {
-    console.log(`Web server running on port ${PORT}`);
-  });
-
-  server.on("error", (err) => {
-    if (err.code === "EADDRINUSE") {
-      console.log(`Port ${PORT} is in use. Freeing port...`);
-
-      const killCommand =
-        process.platform === "win32"
-          ? `for /f "tokens=5" %a in ('netstat -ano ^| findstr :${PORT}') do taskkill /F /PID %a`
-          : `lsof -t -i:${PORT} | xargs kill -9`;
-
-      exec(killCommand, (killErr) => {
-        if (killErr) {
-          console.error("Failed to free port:", killErr);
-        } else {
-          console.log(`Port ${PORT} freed. Restarting server...`);
-          setTimeout(startServer, 1000);
-        }
-      });
-    } else {
-      console.error("Server error:", err);
-      setTimeout(startServer, 1000);
-    }
-  });
-
-  process.on("uncaughtException", (err) => {
-    console.error("Uncaught exception:", err);
-    server.close(() => startServer());
-  });
-
-  process.on("unhandledRejection", (reason) => {
-    console.error("Unhandled rejection:", reason);
-    server.close(() => startServer());
-  });
-}
-
-// Start the Express server
-startServer();
 // Singleton instance
 export const whatsappBot = new WhatsAppBotService();
