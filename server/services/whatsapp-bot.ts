@@ -4,6 +4,23 @@ import qrcode from "qrcode";
 import fetch from "node-fetch";
 import Tesseract from "tesseract.js";
 import { storage } from "../storage";
+import express from "express";
+
+const app = express();
+
+app.get("/api/bot/stats", async (req, res) => {
+  try {
+    const stats = await storage.getBotStats();
+    res.json(stats);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch stats" });
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`✅ Web server running on port ${PORT}`);
+});
 
 interface BotStatus {
   isRunning: boolean;
