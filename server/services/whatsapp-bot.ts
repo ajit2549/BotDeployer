@@ -4,25 +4,6 @@ import qrcode from "qrcode";
 import fetch from "node-fetch";
 import Tesseract from "tesseract.js";
 import { storage } from "../storage";
-import express from "express";
-import http from "http";
-
-const app = express();
-const server = http.createServer(app);
-
-app.get("/api/bot/stats", async (req, res) => {
-  try {
-    const stats = await storage.getBotStats();
-    res.json(stats);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch stats" });
-  }
-});
-
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`✅ Web server running on port ${PORT}`);
-});
 
 interface BotStatus {
   isRunning: boolean;
@@ -133,8 +114,10 @@ export class WhatsAppBotService {
         this.status.isRunning = false;
         await storage.addBotLog({
           level: "warn",
-          message: "🔌 Bot disconnected",
+          message: "🔌 Bot disconnected. Attempting restart...",
         });
+
+        setTimeout(() => this.restart(), 5000); // restart after 5 seconds
       });
 
       this.client.on("message", this.handleMessage.bind(this));
