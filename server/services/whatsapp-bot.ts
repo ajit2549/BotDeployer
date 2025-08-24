@@ -5,8 +5,10 @@ import fetch from "node-fetch";
 import Tesseract from "tesseract.js";
 import { storage } from "../storage";
 import express from "express";
+import http from "http";
 
 const app = express();
+const server = http.createServer(app);
 
 app.get("/api/bot/stats", async (req, res) => {
   try {
@@ -17,8 +19,8 @@ app.get("/api/bot/stats", async (req, res) => {
   }
 });
 
-const PORT = 3000;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
   console.log(`✅ Web server running on port ${PORT}`);
 });
 
