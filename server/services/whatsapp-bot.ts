@@ -132,6 +132,7 @@ export class WhatsAppBotService {
 
   private async handleMessage(msg: any) {
     try {
+      console.log("Message received:",msg.body);
       const config = await storage.getBotConfig();
       if (!config || !config.targetGroupId) return;
 
